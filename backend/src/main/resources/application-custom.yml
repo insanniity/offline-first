@@ -3,8 +3,6 @@ spring:
     mongodb:
       host: localhost:27017
       database: offline-first
-  servlet:
-    context-path: /api
 jwt:
   public-key: classpath:app.pub
   private-key: classpath:app.key
