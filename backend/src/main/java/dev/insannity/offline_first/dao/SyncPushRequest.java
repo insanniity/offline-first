@@ -19,6 +19,6 @@ import lombok.experimental.FieldDefaults;
 public class SyncPushRequest {
 
     Changes changes = new Changes();
-    Integer timestamp;
+    // Integer timestamp;
 
 }

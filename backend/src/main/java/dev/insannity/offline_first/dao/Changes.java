@@ -1,7 +1,6 @@
 package dev.insannity.offline_first.dao;
 
 
-import dev.insannity.offline_first.entities.Cliente;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -19,6 +18,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 public class Changes {
 
-    ChangeObject<Cliente> clientes = new ChangeObject<>();
+    ChangeObject<ClienteDAO> clientes = new ChangeObject<>();
 
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import dev.insannity.offline_first.dao.ChangeObject;
+import dev.insannity.offline_first.dao.ClienteDAO;
 import dev.insannity.offline_first.dao.SyncPullRequest;
 import dev.insannity.offline_first.dao.SyncPullResponse;
 import dev.insannity.offline_first.dao.SyncPushRequest;
@@ -38,37 +39,32 @@ public class SyncService {
     public SyncPushResponse push(SyncPushRequest request) {
         SyncPushResponse response = new SyncPushResponse();
 
-        ChangeObject<Cliente> changes = request.getChanges().getClientes();
+        ChangeObject<ClienteDAO> changes = request.getChanges().getClientes();
         if (changes == null) {
             return response;
         }
 
         if (changes.getCreated() != null && !changes.getCreated().isEmpty()) {
-            for (Cliente c : changes.getCreated()) {
-                if (c.getDeleted_at() != null) {
-                    c.setDeleted_at(null);
-                }
-                clienteRepository.save(c);
+            for (ClienteDAO c : changes.getCreated()) {
+                Cliente entity = new Cliente();
+                copyClienteDtoToEntity(c, entity);
+                clienteRepository.save(entity);
             }
         }
 
         if (changes.getUpdated() != null && !changes.getUpdated().isEmpty()) {
-            for (Cliente c : changes.getUpdated()) {
-                if (c.getId() == null || !clienteRepository.existsById(c.getId())) {
-                    clienteRepository.save(c);
-                } else {
-                    clienteRepository.save(c);
-                }
+            for (ClienteDAO c : changes.getUpdated()) {
+                Cliente entity = clienteRepository.findById(c.getId()).orElse(new Cliente());
+                copyClienteDtoToEntity(c, entity);
+                clienteRepository.save(entity);
             }
         }
 
         if (changes.getDeleted() != null && !changes.getDeleted().isEmpty()) {
             for (String id : changes.getDeleted()) {
                 clienteRepository.findById(id).ifPresent(entity -> {
-                    if (entity.getDeleted_at() == null) {
-                        entity.setDeleted_at(LocalDateTime.now());
-                        clienteRepository.save(entity);
-                    }
+                    entity.setDeleted_at(LocalDateTime.now());
+                    clienteRepository.save(entity);
                 });
             }
         }
@@ -78,13 +74,13 @@ public class SyncService {
 
     
     
-    private ChangeObject<Cliente> getClientesChange(Instant data) {
-        ChangeObject<Cliente> clienteChanges = new ChangeObject<>();
+    private ChangeObject<ClienteDAO> getClientesChange(Instant data) {
+        ChangeObject<ClienteDAO> clienteChanges = new ChangeObject<>();
         List<Cliente> clientes =  new ArrayList<>();
         if(data == null){
             clientes = clienteRepository.findAll();
             for (Cliente cliente : clientes) {
-                clienteChanges.addCreated(cliente);
+                clienteChanges.addCreated(new ClienteDAO(cliente));
             }
         }else{
             LocalDateTime localData = LocalDateTime.ofInstant(data, ZoneId.systemDefault());
@@ -95,10 +91,10 @@ public class SyncService {
                     continue;
                 }
                 if(cliente.getCreated_at().isAfter(localData) & cliente.getDeleted_at() == null){
-                    clienteChanges.addCreated(cliente);
+                    clienteChanges.addCreated(new ClienteDAO(cliente));
                     continue;
                 }
-                clienteChanges.addUpdated(cliente);
+                clienteChanges.addUpdated(new ClienteDAO(cliente));
             }
         }
 
@@ -123,6 +119,24 @@ public class SyncService {
         }
     }
 
-    
+    private void copyClienteDtoToEntity(ClienteDAO dto, Cliente entity) {
+        entity.setId(dto.getId());
+        entity.setNome(dto.getNome());
+        entity.setEmail(dto.getEmail());
+        entity.setCgc(dto.getCgc());
+        entity.setEstado(dto.getEstado());
+        entity.setCidade(dto.getCidade());
+        entity.setEndereco(dto.getEndereco());
+        entity.setCreated_at(toLocalDateTime(dto.getCreated_at()));
+        entity.setUpdated_at(toLocalDateTime(dto.getUpdated_at()));
+        entity.setDeleted_at(toLocalDateTime(dto.getDeleted_at()));
+    }
+
+    private LocalDateTime toLocalDateTime(Long epoch) {
+        if (epoch == null) return null;
+        if (epoch <= 0) return null;
+        Instant inst = epoch > 9_999_999_999L ? Instant.ofEpochMilli(epoch) : Instant.ofEpochSecond(epoch);
+        return LocalDateTime.ofInstant(inst, ZoneId.systemDefault());
+    }
 
 }

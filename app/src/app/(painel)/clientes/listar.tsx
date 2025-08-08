@@ -51,16 +51,6 @@ function ListarClientesScreen({ clientes }: { clientes: Cliente[] }) {
                             )}
                             keyExtractor={(item) => item.id}
                             contentContainerStyle={styles.list}
-                            ListHeaderComponent={
-                                <Card variant="outlined" style={styles.headerCard}>
-                                    <View style={styles.headerRow}>
-                                        <Text style={styles.headerText}>Nome</Text>
-                                        <Text style={styles.headerText}>Email</Text>
-                                        <Text style={styles.headerText}>Documento</Text>
-                                        <Text style={styles.headerText}>Ação</Text>
-                                    </View>
-                                </Card>
-                            }
                         />
                     </>
                 )}
@@ -95,21 +85,42 @@ function ClienteCard({ cliente }: { cliente: Cliente }) {
         );
     };
 
+    const createdAtLabel = cliente.createdAt?.toLocaleDateString();
+
     return (
         <Card style={styles.itemCard}>
-            <View style={styles.cardRow}>
-                <View style={styles.accountNameContainer}>
-                    <Text style={styles.accountName}>{cliente.nome}</Text>
-                </View>
-                <View style={styles.percentageContainer}>
-                    <Text style={styles.cellText} numberOfLines={1}>{cliente.email}</Text>
-                </View>
-                <View style={styles.percentageContainer}>
-                    <Text style={styles.cellText} numberOfLines={1}>{cliente.cgc}</Text>
-                </View>
+            <View style={styles.cardHeader}>
+                <Text style={styles.cardTitle} numberOfLines={1}>{cliente.nome}</Text>
                 <Pressable onPress={confirmDelete} style={styles.deleteButton} accessibilityLabel="Excluir cliente">
                     <Trash2Icon size={18} color={theme.colors.text.inverse} />
                 </Pressable>
+            </View>
+
+            <View style={styles.cardContent}>
+                <View style={styles.fieldRow}>
+                    <Text style={styles.fieldLabel}>Email</Text>
+                    <Text style={styles.fieldValue} numberOfLines={1}>{cliente.email || '-'}</Text>
+                </View>
+                <View style={styles.fieldRow}>
+                    <Text style={styles.fieldLabel}>Documento</Text>
+                    <Text style={styles.fieldValue} numberOfLines={1}>{cliente.cgc || '-'}</Text>
+                </View>
+                <View style={styles.fieldRow}>
+                    <Text style={styles.fieldLabel}>Estado</Text>
+                    <Text style={styles.fieldValue} numberOfLines={1}>{cliente.estado || '-'}</Text>
+                </View>
+                <View style={styles.fieldRow}>
+                    <Text style={styles.fieldLabel}>Cidade</Text>
+                    <Text style={styles.fieldValue} numberOfLines={1}>{cliente.cidade || '-'}</Text>
+                </View>
+                <View style={styles.fieldRow}>
+                    <Text style={styles.fieldLabel}>Endereço</Text>
+                    <Text style={styles.fieldValue} numberOfLines={2}>{cliente.endereco || '-'}</Text>
+                </View>
+
+                {createdAtLabel ? (
+                    <Text style={styles.metaText}>Criado em {createdAtLabel}</Text>
+                ) : null}
             </View>
         </Card>
     );
@@ -178,51 +189,38 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.border.light,
     },
 
-    headerCard: {
-        backgroundColor: theme.colors.surfaceSecondary,
-    },
-
-    headerRow: {
+    cardHeader: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
+        justifyContent: 'space-between',
     },
 
-    headerText: {
-        ...theme.typography.bodySmall,
-        fontWeight: '600',
+    cardTitle: {
+        ...theme.typography.h3,
+        color: theme.colors.text.primary,
+        flex: 1,
+        marginRight: theme.spacing.md,
+    },
+
+    cardContent: {
+        marginTop: theme.spacing.md,
+    },
+
+    fieldRow: {
+        marginBottom: theme.spacing.xs,
+    },
+
+    fieldLabel: {
+        ...theme.typography.caption,
         color: theme.colors.text.secondary,
         textTransform: 'uppercase',
         letterSpacing: 0.5,
-        flex: 1,
-        textAlign: 'center',
+        marginBottom: 2,
     },
 
-    cardRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-
-    accountNameContainer: {
-        flex: 2,
-    },
-
-    accountName: {
+    fieldValue: {
         ...theme.typography.body,
         color: theme.colors.text.primary,
-        fontWeight: '500',
-    },
-
-    percentageContainer: {
-        flex: 1,
-        alignItems: 'center',
-    },
-
-    percentageValue: {
-        ...theme.typography.body,
-        color: theme.colors.primary,
-        fontWeight: '600',
     },
 
     itemCard: {
@@ -242,6 +240,12 @@ const styles = StyleSheet.create({
         padding: theme.spacing.sm,
         ...theme.shadows.sm,
         marginLeft: theme.spacing.md,
+    },
+
+    metaText: {
+        ...theme.typography.caption,
+        color: theme.colors.text.secondary,
+        marginTop: theme.spacing.sm,
     },
 
     emptyState: {
@@ -270,7 +274,7 @@ const styles = StyleSheet.create({
     },
 });
 
-const enhance = withObservables(['clientes'], () => ({
+const enhance = withObservables([], () => ({
     clientes: clientesCollection.query()
 }))
 

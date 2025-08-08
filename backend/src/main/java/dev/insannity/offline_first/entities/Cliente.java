@@ -3,12 +3,12 @@ package dev.insannity.offline_first.entities;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -18,7 +18,7 @@ public class Cliente {
     @Id
     @ToString.Include
     @EqualsAndHashCode.Include
-    String id = new ObjectId().toString();
+    String id = UUID.randomUUID().toString().replace("-", "");
 
     String nome;
     String email;
@@ -29,11 +29,11 @@ public class Cliente {
 
 
     @CreatedDate
-    @Setter(value = AccessLevel.PROTECTED)
+    // @Setter(value = AccessLevel.PROTECTED)
     LocalDateTime created_at = LocalDateTime.now();
 
     @LastModifiedDate
-    @Setter(value = AccessLevel.PROTECTED)
+    // @Setter(value = AccessLevel.PROTECTED)
     LocalDateTime updated_at = LocalDateTime.now();
 
     LocalDateTime deleted_at;

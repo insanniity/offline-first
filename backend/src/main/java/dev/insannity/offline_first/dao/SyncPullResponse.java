@@ -2,7 +2,6 @@ package dev.insannity.offline_first.dao;
 
 import java.time.Instant;
 
-import dev.insannity.offline_first.entities.Cliente;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -24,7 +23,7 @@ public class SyncPullResponse {
     String timestamp = String.valueOf(Instant.now().getEpochSecond());
 
 
-    public void setClientesChange (ChangeObject<Cliente> clienteChanges){
+    public void setClientesChange (ChangeObject<ClienteDAO> clienteChanges){
         this.changes.setClientes(clienteChanges);
     }
 
