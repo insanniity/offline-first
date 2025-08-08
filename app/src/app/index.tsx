@@ -1,15 +1,12 @@
-import { Text, View } from "react-native";
+import { useAuthStore } from "@/store/auth";
+import { Redirect } from "expo-router";
 
-export default function Index() {
-  return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
-    </View>
-  );
+export default function IndexScreen() {
+  const logado = useAuthStore((state) => state.logado);
+
+  if (logado) {
+    return <Redirect href="/home" />;
+  }
+
+  return <Redirect href="/login" />;
 }
