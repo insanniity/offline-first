@@ -30,12 +30,12 @@ public class Cliente {
 
     @CreatedDate
     @Setter(value = AccessLevel.PROTECTED)
-    LocalDateTime criado = LocalDateTime.now();
+    LocalDateTime created_at = LocalDateTime.now();
 
     @LastModifiedDate
     @Setter(value = AccessLevel.PROTECTED)
-    LocalDateTime atualizado = LocalDateTime.now();
+    LocalDateTime updated_at = LocalDateTime.now();
 
-    LocalDateTime deletado;
+    LocalDateTime deleted_at;
 
 }

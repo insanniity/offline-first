@@ -45,11 +45,11 @@ public class SyncService {
         List<Cliente> clientes = clienteRepository.findAllAfter(localData);
 
         for (Cliente cliente : clientes) {
-            if(cliente.getDeletado() != null){
+            if(cliente.getDeleted_at() != null){
                 clienteChanges.addDeleted(cliente.getId());
                 continue;
             }
-            if(cliente.getCriado().isAfter(localData) & cliente.getDeletado() == null){
+            if(cliente.getCreated_at().isAfter(localData) & cliente.getDeleted_at() == null){
                 clienteChanges.addCreated(cliente);
                 continue;
             }

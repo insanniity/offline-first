@@ -55,7 +55,7 @@ public class ClienteService {
     public void deletar(String id) {
         repository.findByIdNotDeleted(id)
                 .map(cliente -> {
-                    cliente.setDeletado(LocalDateTime.now());
+                    cliente.setDeleted_at((LocalDateTime.now()));
                     return repository.save(cliente);
                 })
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado com ID: " + id));

@@ -13,19 +13,19 @@ import java.time.LocalDateTime;
 
 public interface ClienteRepository extends MongoRepository<Cliente, String> {
 
-    @Query("{ 'deletado': null }")
+    @Query("{ 'deleted_at': null }")
     List<Cliente> findAllNotDeleted();
 
-    @Query("{ 'deletado': null }")
+    @Query("{ 'deleted_at': null }")
     Page<Cliente> findAllNotDeleted(Pageable pageable);
 
-    @Query("{ '_id': ?0, 'deletado': null }")
+    @Query("{ '_id': ?0, 'deleted_at': null }")
     Optional<Cliente> findByIdNotDeleted(String id);
 
-    @Query(value = "{ 'deletado': null }", count = true)
+    @Query(value = "{ 'deleted_at': null }", count = true)
     long countNotDeleted();
 
-    @Query("{ 'atualizado': { $gt: ?0 }}")
+    @Query("{ 'updated_at': { $gt: ?0 }}")
     List<Cliente> findAllAfter(LocalDateTime atualizado);
 
 }
