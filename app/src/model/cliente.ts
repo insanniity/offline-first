@@ -1,5 +1,5 @@
 import { Model } from '@nozbe/watermelondb'
-import { date, text } from '@nozbe/watermelondb/decorators'
+import { date, nochange, readonly, text } from '@nozbe/watermelondb/decorators'
 
 export default class Cliente extends Model {
     static table = 'clientes'
@@ -12,7 +12,7 @@ export default class Cliente extends Model {
     @text('endereco') endereco!: string
 
     // timestamps armazenados como number (epoch ms) no schema; aqui expostos como Date
-    @date('created_at') created_at!: Date
-    @date('updated_at') updated_at!: Date
-    @date('deleted_at') deleted_at?: Date
+    @nochange @readonly @date('created_at') created_at!: Date
+    @readonly @date('updated_at') updated_at!: Date
+    @readonly @date('deleted_at') deleted_at?: Date
 }

@@ -21,7 +21,7 @@ import lombok.experimental.FieldDefaults;
 public class SyncPullResponse {
 
     Changes changes = new Changes();
-    Instant timestamp = Instant.now();
+    String timestamp = String.valueOf(Instant.now().getEpochSecond());
 
 
     public void setClientesChange (ChangeObject<Cliente> clienteChanges){

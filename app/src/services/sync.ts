@@ -13,7 +13,9 @@ export class SyncService {
         try {
             const requestConfig: AxiosRequestConfig = {
                 ...config,
-                data: request
+                params: {
+                    ...request
+                }
             };
 
             const response = await axiosInstance.get<SyncPullResponse>(`${this.SYNC_ENDPOINT}`, requestConfig);

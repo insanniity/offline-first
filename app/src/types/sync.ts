@@ -11,7 +11,7 @@ export interface Changes {
 }
 
 export interface SyncPullRequest {
-    timestamp: string;
+    lastPulledAt?: number;
     schemaVersion: number;
     migration?: any;
 }
@@ -24,7 +24,7 @@ export interface SyncPullResponse {
 
 export interface SyncPushRequest {
     changes: Changes;
-    timestamp: string;
+    // timestamp: number;
 }
 
 export interface SyncPushResponse {

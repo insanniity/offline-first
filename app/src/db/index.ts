@@ -7,7 +7,7 @@ import { Platform } from 'react-native'
 import migrations from './migrations'
 import schema from './schema'
 
-setGenerator(() => Crypto.randomUUID());
+setGenerator(() => Crypto.randomUUID().replace(/-/g, ''));
 
 // First, create the adapter to the underlying database:
 const adapter = new SQLiteAdapter({
