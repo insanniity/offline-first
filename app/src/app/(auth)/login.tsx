@@ -1,8 +1,12 @@
 import Button from "@/components/Button";
 import Input from "@/components/Input";
+import { AuthService } from "@/services/auth";
+import { useAuthStore } from "@/store/auth";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { StyleSheet, Text, View } from "react-native";
+import Toast from "react-native-toast-message";
 import { InferType, object, string } from "yup";
 
 
@@ -22,11 +26,25 @@ export default function LoginScreen() {
             senha: __DEV__ ? '123456' : '',
         }
     });
+    const login = useAuthStore((state) => state.login);
+
+    const loginMutation = useMutation({
+        mutationFn: async (data: FormType) => {
+            return AuthService.login({ usuario: data.usuario, senha: data.senha });
+        },
+        onSuccess: (data) => {
+            login(data);
+            Toast.show({ type: 'success', text1: 'Login successful' });
+        },
+        onError: (error) => {
+            Toast.show({ type: 'error', text1: 'Login failed', text2: (error as Error).message });
+        }
+    })
 
 
     const onSubmit = handleSubmit(async (data: FormType) => {
         const { usuario, senha } = data;
-        console.log('Login attempt:', { usuario, senha });
+        await loginMutation.mutateAsync({ usuario, senha });
     });
 
 

@@ -11,7 +11,7 @@ export const useAxios = () => {
     const exp = useAuthStore((state) => state.user?.exp);
 
     axiosInstance.interceptors.request.use((config) => {
-        if (config.url?.includes('/api/auth')) {
+        if (config.url?.includes('/auth')) {
             return config;
         }
         if (!accessToken) {
